@@ -1,2 +1,0 @@
-this is a defered time synthesis environment written with node.js
-I will be documenting further in the future, for now it basically just accepts CSOUND .orc and .sco files in a POST request and returns the soundfile CSOUND creates, all cgi style.

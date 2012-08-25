@@ -1,0 +1,1 @@
+{"sco":"f 1 0 4096 10 1\n\ni\t1\t0\t1\n","orc":"sr = 44100\nkr = 4410\nksmps = 10\nnchnls = 2\n\n\n\n\t instr 1\na1 oscil 10000, 440, 1\n\t outs\t a1, a1\n\t endin\n"}

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm /tmp/orc* /tmp/sco* /tmp/out*
