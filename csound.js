@@ -1,6 +1,5 @@
 this.create_csound = function(callback)
 {
-	
 	var fs = require("fs");
 	var temp = require("temp");
 	
@@ -8,6 +7,7 @@ this.create_csound = function(callback)
 
 	cs.write_files = function(orc,sco,callback)
 	{
+		//a block to defer the callback till everything's done
 		var def={}
 
 		cs.temp_orc = temp.open('orc',function(err,info)
@@ -90,15 +90,4 @@ this.create_csound = function(callback)
 		
 	}
 	return cs;
-}
-
-//leagcy
-this.go = function(orcfile,scofile,outfile,output_stream,callback)
-{
-	var cp = require('child_process');
-	var cs = cp.spawn('csound',[orcfile,scofile,'-o',outfile]);
-
-	cs.stdout.on('data',function(chunk){console.log(chunk)});
-	cs.stderr.pipe(output_stream);
-	cs.on('exit',callback);
 }
