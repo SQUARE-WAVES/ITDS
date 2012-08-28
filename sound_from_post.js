@@ -1,12 +1,13 @@
 //a controller that creates a sound file from an orc and sco file in a POST from a form
 var cs = require("./csound.js");
 var qs = require("querystring");
+var fs = require("fs");
 
 module.exports = function(req,res)
 {
 	var csound = cs.new_csound();
 	var body = "";
-	
+	req.setEncoding("utf8");
 	req.on('data',function(chunk)
 	{
 		body += chunk;
@@ -14,6 +15,7 @@ module.exports = function(req,res)
 
 	req.on('end',function()
 	{
+
 		var obj = qs.decode(decodeURIComponent(body));
 		var orc = obj.orc;
 		var sco = obj.sco;
@@ -27,7 +29,7 @@ module.exports = function(req,res)
 				return;
 			}
 
-			csound.render_sound(function(err,outpath)
+			csound.render_sound(process.stdout,function(err,outpath)
 			{
 				console.log("running csound");
 				if(err)

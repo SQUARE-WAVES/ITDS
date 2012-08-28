@@ -1,8 +1,22 @@
 var cs = require("./csound.js");
-var qs = require("querystring");
 var http = require("http");
 var fs = require('fs');
+var sfp = require("./sound_from_post.js");
 
+var s = http.createServer(function(req,res)
+{
+	if(req.method == "POST")
+	{
+		sfp(req,res);
+	}
+	else
+	{
+		res.end("shit's whack");
+	}
+});
+
+
+/*
 var s = http.createServer(function(req,res)
 {
 
@@ -46,5 +60,5 @@ var s = http.createServer(function(req,res)
 		});
 	});
 });
-
-s.listen("12345");
+*/
+s.listen("3000");

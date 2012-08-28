@@ -97,7 +97,7 @@ csound.prototype.render_sound = function(infostream,callback)
 			err = true;
 		}
 		
-		callback(err,this.outfile);
+		callback(err,cs.outfile);
 	});
 }
 
