@@ -1,57 +1,69 @@
 var cs = require("../csound.js");
-var assert = require("assert");
 var fs = require("fs");
 
-var test = {}
+var sounder = cs.new_csound();
+var orctext;
+var scotext;
 
-
-
-test["test write files"] = function(done)
+function get_texts(callback)
 {
-	var test_orc = "whatever";
-	var test_sco = "who cares";
+	var scodone = false;
+	var orcdone = false;
+	var errs = false;
 
-	test_sound = cs.create_csound();
-
-	csound.write_filesa(test_orc,test_sco,function(err)
+	function check()
 	{
-		try
+		if(orcdone && scodone)
 		{
-		assert.notOk(err);
-		assert.ok(test_orc.fd,"the orc should have a file descriptor");
-		assert.ok(test_sco.fd),"the sco should have a file descriptor");
-		assert.ok(test_orc.path,"the orc should have a path");
-		assert.ok(test_sco.path,"the sco should have a path");
-
-		var orcval = fs.readFileSync(test_orc.path,'ascii');
-		var scoval = fs.readFileSync(test_sco.path,'ascii');
-		assert.equal(test_orc,orcval,"the orc file should have the right values written");
-		assert.equal(test_sco,scoval,"the sco file should hvae the right values written");
-
-		done(true);
+			callback(errs);
 		}
-		catch(err);
+	}
+
+	fs.readFile("../testdata/simple.orc",function(err,data)
+	{
+		if(err)
 		{
-			done(false,err);
-		}
-	});	
+			errs = err;
+		}		
+
+		orcdone = true;
+		orctext = data;
+		check();
+	});
+
+	fs.readFile("../testdata/simple.sco",function(err,data)
+	{
+		if(err)
+		{
+			errs = err;
+		}		
+
+		scodone = true;
+		scotext = data;
+		check();
+	});
 }
 
-//for now just do like this
-function test_complete(passed,err)
+get_texts(function(err)
 {
-	if(passed)
-	{
-		console.log("test passed");
-	}
 	if(err)
 	{
-		console.log("test failed: " + err)
+		throw err;
 	}
-}
 
-for(k in test)
-{
-	console.log("running: " key);
-	test[key](test_complete);
-}
+	sounder.write_files(orctext,scotext,function(err)
+	{
+		if(err)
+		{
+			throw err;
+		}
+
+		sounder.render_sound(process.stderr,function(err,path)
+		{
+			if(err)
+			{
+				throw err;
+			}
+		});
+	});
+});

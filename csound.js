@@ -1,3 +1,117 @@
+var fs = require("fs");
+var temp = require("temp");
+
+function csound()
+{
+	this.orcfile = temp.path("orc");
+	this.scofile = temp.path("sco");
+	this.outfile = temp.path("out");
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an err string
+//-----------------------------------------------------------------------------
+csound.prototype.write_orc = function(orctext,callback)
+{
+	var cs = this;
+	fs.writeFile(cs.orcfile,orctext,function(err)
+	{
+		callback(err);
+	});
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an err string
+//-----------------------------------------------------------------------------
+csound.prototype.write_sco = function(scotext,callback)
+{
+	var cs = this;
+
+	fs.writeFile(cs.scofile,scotext,function(err)
+	{
+		callback(err);
+	});
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an err string
+//-----------------------------------------------------------------------------
+csound.prototype.write_files = function(orctext,scotext,callback)
+{
+	var orcdone = false;
+	var scodone = false;
+	var	errors = "";
+	
+	function check()
+	{
+		if(orcdone && scodone)
+		{
+			callback(errors);
+		}
+	}
+
+	this.write_orc(orctext,function(err)
+	{
+		if(err)
+		{
+			errors += "orc failed: "+ err +" ";
+		}
+
+		orcdone = true;
+		check();
+	});
+
+	this.write_sco(scotext,function(err)
+	{
+		if(err)
+		{
+			errors += "sco failed: "+ err +" ";
+		}
+
+		scodone = true;
+		check();
+	});
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an err string and a filepath to the sound file
+//-----------------------------------------------------------------------------
+csound.prototype.render_sound = function(infostream,callback)
+{
+	var cs = this;
+	var cp = require('child_process');
+
+	var cs_process = cp.spawn('csound',[cs.orcfile,cs.scofile,'-o',cs.outfile]);
+
+	if(infostream)
+	{
+		//pipe the info to this bad boy
+		cs_process.stderr.pipe(infostream);
+	}
+
+	cs_process.on("exit",function(code)
+	{
+		var err = false;
+		if(code != 0)
+		{
+			err = true;
+		}
+		
+		callback(err,this.outfile);
+	});
+}
+
+
+exports.new_csound = function()
+{
+	return new csound();
+}
+
+
+
+//-----------------------------------------------------------------------------
+//LEGACY
+//-----------------------------------------------------------------------------
 this.create_csound = function(callback)
 {
 	var fs = require("fs");
@@ -77,7 +191,7 @@ this.create_csound = function(callback)
 		var outpath = temp.path("out");
 		
 		var cs_process = cp.spawn('csound',[cs.temp_orc.path,cs.temp_sco.path,'-o',outpath]);
-		cs_process.stderr.pipe(process.stdout);
+		cs_process.stderr.pipe(process.stdut);
 		
 		cs_process.on("exit",function(code)
 		{
