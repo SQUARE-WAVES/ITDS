@@ -64,6 +64,16 @@ get_texts(function(err)
 			{
 				throw err;
 			}
+
+			sounder.clean_files(function(err)
+			{
+				if(err)
+				{
+					throw err;
+				}
+
+				console.log("all done");
+			});
 		});
 	});
 });

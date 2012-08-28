@@ -101,6 +101,85 @@ csound.prototype.render_sound = function(infostream,callback)
 	});
 }
 
+//TODO:: FIGURE OUT HOW TO GET GARBAGE COLLECTION TO HANDLE THIS SHIT
+//-----------------------------------------------------------------------------
+//callback takes an error string
+//-----------------------------------------------------------------------------
+csound.prototype.clean_orc = function(callback)
+{
+	fs.unlink(this.orcfile,callback);
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an error string
+//-----------------------------------------------------------------------------
+csound.prototype.clean_sco = function(callback)
+{
+	fs.unlink(this.scofile,callback);
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an error string
+//-----------------------------------------------------------------------------
+csound.prototype.clean_out = function(callback)
+{
+	fs.unlink(this.outfile,callback);
+}
+
+//-----------------------------------------------------------------------------
+//callback takes an error string
+//-----------------------------------------------------------------------------
+csound.prototype.clean_files = function(callback)
+{
+	var orcdone = false;
+	var scodone = false;
+	var outdone = false;
+	var	errors = "";
+	
+	function check()
+	{
+		if(orcdone && scodone && outdone)
+		{
+			callback(errors);
+		}
+	}
+
+	this.clean_orc(function(err)
+	{
+		if(err)
+		{
+			errors += "orc error";
+		}
+
+		orcdonce = true;
+		check();
+
+	});
+
+	this.clean_sco(function(err)
+	{
+		if(err)
+		{
+			errors += "sco error";
+		}
+
+		scodone = true;
+		check();
+
+	});
+
+	this.clean_out(function(err)
+	{
+		if(err)
+		{
+			errors += "out error";
+		}
+
+		outdone = true;
+		check();
+	});
+}
+
 
 exports.new_csound = function()
 {
