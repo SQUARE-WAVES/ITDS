@@ -5,9 +5,17 @@ var fs = require("fs");
 
 module.exports = function(req,res)
 {
+
+	if(req.method != 'POST')
+	{
+		res.end("post's only dude");
+		return;
+	}
+
 	var csound = cs.new_csound();
 	var body = "";
 	req.setEncoding("utf8");
+	
 	req.on('data',function(chunk)
 	{
 		body += chunk;
@@ -53,7 +61,6 @@ module.exports = function(req,res)
 						}
 					});
 				});
-
 			});
 		});
 	});
