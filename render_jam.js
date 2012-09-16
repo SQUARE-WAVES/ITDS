@@ -29,7 +29,9 @@ var render_orc = function(jam)
 		//TODO::refactor to use object.keys
 		for(iter_index in  instr.parameters)
 		{
-			var param_lablel = 'p'+iter_index;
+			var realval = parseInt(iter_index);
+			//the  p numbers 1-3 are reserved in csound
+			var param_lablel = 'p'+(realval+4);
 			renderable_instrument[instr.parameters[iter_index]]=param_lablel;
 		}
 		
