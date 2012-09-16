@@ -18,15 +18,25 @@ cc.get_jam("jambor",function(jam)
 			{
 				throw err;
 			}
+	
+			console.log("ITS FINISHED");
 
-			csound.clean_files(function(err)
+			cc.attach_sound(jam._id,jam._rev,csound.outfile,jam.tracks[0].name+".wav",function(res)
 			{
-				if(err)
+				var resbod = "";
+				res.on('data',function(chunk)
 				{
-					throw err;
-				}
-			})
-		});
+					resbod +=chunk;
+				});
 
+				res.on('end',function()
+				{
+					console.log(resbod);
+					csound.clean_files(function()
+					{
+					});
+				});
+			});
+		});
 	});
 });

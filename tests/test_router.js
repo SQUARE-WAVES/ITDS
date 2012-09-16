@@ -1,68 +1,37 @@
 var router = require("../router.js");
 
-var testMethod = function(req,res)
+var test_routeable1 = {}
+test_routeable1.route = function(args)
 {
-	console.log("TESTMETHOD");
-	console.log({"req":req,"res":res});
+	console.log("you sent me:");
+	console.log(args);
 }
 
-var testMethod2 = function(req,res)
+var test_routeable2 = {};
+test_routeable2.route = function(pathstack,args)
 {
-	console.log("TEST TWO!");
-	console.log([req,res]);
+	console.log("you "+pathstack.pop()+" me:");
+	console.log(args);
 }
 
-function test_routing()
+var test_non_routeable = {};
+
+var router1 = router.create();
+
+router1.insert_resource("/dogs/of/spain",test_routeable1);
+router1.insert_resource("/cats/of/",test_routeable2);
+
+try
 {
-	var r = router.create_router({"/shit/yeah":testMethod});
-	console.log("should print '{req:dogs,:res:cats}'");
-	r.route("/shit/yeah","dogs","cats");
+	router1.insert_resource("/WHAT/THE",test_non_routeable);
+}
+catch(exception)
+{
+	console.log("should get an exception:");
+	console.log(exception);
 }
 
-function test_add_route()
-{
-	var r = router.create_router({"/shit/yeah":testMethod});
-	r.add_route("/oh/snap",testMethod2);
 
-	console.log("should see original");
-	r.route("/shit/yeah","dogs","cats");
-
-	console.log("should see new guy");
-	r.route("/oh/snap","dogs","cats");
-}
-
-function test_add_routes()
-{
-	var newroutes = {};
-
-	var list = ['/dogs/cats','/zip/zap','/fish/heads'];
-	
-	list.map(function(item)
-	{
-		newroutes[item] = function(req,res)
-		{
-			console.log("route at "+item);
-			console.log([req,res]);
-		}
-	});
-
-	var r = router.create_router({"/shit/yeah":testMethod});
-	var new_route_start = '/oh/man';
-
-	r.add_routes(new_route_start,newroutes);
-
-	console.log("should see original");
-	r.route("/shit/yeah","dogs","cats");
-	
-	list.map(function(item)
-	{
-		var newroute = new_route_start + item;
-		console.log("trying: "+newroute);
-		r.route(newroute,"way","cool");
-	});
-}
-
-test_routing();
-test_add_route();
-test_add_routes();
-
+router1.route_item("/dogs/of/spain","catfish");
+router1.route_item("/cats/of/shit",{"hey":"boy"});
+router1.route_item("/cats/of/love",{"hey":"boy"});
