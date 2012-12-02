@@ -29,33 +29,6 @@ defaultPallate.finished_note = "#FF0000";
 
 var PianoRoll = Backbone.View.extend({
 
-	"prep":function()
-	{
-		var temp = this.options.template;
-		var name = this.options.name;
-		
-		var template_context = 
-		{
-			"width" : this.options.width,
-			"height" : this.options.height,
-			"name" : name
-		}
-
-		this.$el.append(temp(template_context));
-		this.collect();
-	},
-	
-	"collect":function()
-	{
-		var name = this.options.name;
-		this.options.canvas1 = $("#"+name+" #layer1");
-		this.options.canvas2 = $("#"+name+" #layer2");
-		
-		this.options.bar_ctx = this.options.canvas1[0].getContext('2d');
-		this.options.note_ctx = this.options.canvas2[0].getContext('2d');
-		this.render_all();
-	},
-
 	"render_bars":function()
 	{
 		var ctx = this.options.bar_ctx;
@@ -233,14 +206,15 @@ var PianoRoll = Backbone.View.extend({
 		var width = this.options.width;
 		var height = this.options.height;
 		var ticks = this.model.get('end') - this.model.get('start');
-		var ticks_per = this.model.get('ticks_per_grid');
+		var ticks_per_grid = this.model.get('ticks_per_grid');
+		var ticks_per_note = this.model.get('ticks_per_note');
 		var end_note = this.model.get('top_nn');
 		var start_note = this.model.get('bottom_nn');
 		
 		var tick_width = width/ticks;
 		var tick = Math.floor(x/tick_width) + this.model.get('start');
 		
-		var grid_width = tick_width * ticks_per;
+		var grid_width = tick_width * ticks_per_grid;
 		
 		var grid_x = Math.floor(x/grid_width);
 		
@@ -249,8 +223,8 @@ var PianoRoll = Backbone.View.extend({
 		
 		var grid_y = num_notes - Math.ceil(y/bar_height);
 		
-		var start = grid_x *ticks_per + window.get('start');
-		var end = start + ticks_per;
+		var start = grid_x * ticks_per_grid + window.get('start');
+		var end = start + ticks_per_note;
 		var nn = grid_y+start_note;
 		
 		var note = window.has_note(tick,nn);
@@ -295,6 +269,14 @@ var PianoRoll = Backbone.View.extend({
 	},
 	
 	'set_note':function(ev)
+	{
+		ev.preventDefault();
+		var val = parseInt(ev.currentTarget.value);
+		var seq_window = this.model;
+		seq_window.set('ticks_per_note',val);
+	},
+	
+	'set_grid':function(ev)
 	{
 		ev.preventDefault();
 		var val = parseInt(ev.currentTarget.value);
@@ -345,9 +327,15 @@ var PianoRoll = Backbone.View.extend({
 		seqWindow.set('top_nn', seqWindow.get('bottom_nn') + (12*val));
 	},
 	
+	'pianoRollKey' : function(ev)
+	{
+		ev.preventDefault();
+	},
+	
 	'events':
 	{
 		'click .multicnv':'detect_hit',
+		'change #gridSelector':'set_grid',
 		'change #noteSelector':'set_note',
 		'change #startMeausre' : 'change_start',
 		'change #measures' : 'change_range',
@@ -357,7 +345,7 @@ var PianoRoll = Backbone.View.extend({
 	
 	'initialize':function()
 	{
-		_.bindAll(this, 'render_bars','render_notes','render_all','detect_hit','prep','collect','set_note');
+		_.bindAll(this, 'render_bars','render_notes','render_all','detect_hit','prep','set_note','pianoRollKey');
 		
 		this.model.bind('change',this.render_all);
 		
@@ -365,6 +353,30 @@ var PianoRoll = Backbone.View.extend({
 		this.model.get('seq').bind('add',this.render_notes);
 		this.model.get('seq').bind('remove',this.render_notes);
 		this.prep();
+	},
+	
+		"prep":function()
+	{
+		var temp = this.options.template;
+		var name = this.options.name;
+		
+		var template_context = 
+		{
+			"width" : this.options.width,
+			"height" : this.options.height,
+			"name" : name
+		}
+
+		this.$el.append(temp(template_context));
+		
+		var name = this.options.name;
+		this.options.canvas1 = $("#"+name+" #layer1");
+		this.options.canvas2 = $("#"+name+" #layer2");
+		
+		this.options.bar_ctx = this.options.canvas1[0].getContext('2d');
+		this.options.note_ctx = this.options.canvas2[0].getContext('2d');
+		this.render_all();
+		
 	}
 	
 });

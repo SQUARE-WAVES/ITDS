@@ -1,5 +1,3 @@
-
-
 var Note = Backbone.Model.extend(
 {
 	'defaults':
@@ -52,6 +50,7 @@ var Window = Backbone.Model.extend(
 		'beats_per_measure' : 4,
 		'ticks_per_beat' : 24, //a tick is a 96th note like midi clock
 		'ticks_per_grid' : 24,
+		'ticks_per_note' : 24
 	},
 	
 	'initialize': function()

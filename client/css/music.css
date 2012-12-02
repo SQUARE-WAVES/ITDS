@@ -1,0 +1,63 @@
+			.hidden
+			{
+				display:none;
+			}
+			
+			.layer
+			{
+				position: absolute; 
+				left: 0; 
+				top: 0; 
+			}
+			
+			.multicnv
+			{
+				position:relative;
+				margin:auto;
+				padding:10px
+			}
+			
+			.small-form
+			{
+				width:80px;
+			}
+			
+			.medium-form
+			{
+				width:70%;
+			}
+			
+			.big-form
+			{
+				width:100%;
+			}
+			
+			div.tablespot
+			{
+				overflow:scroll;
+				height:300px;			
+			}
+			
+			div.canvas-holder
+			{
+				padding:10px;
+			}
+			
+			.sidebar div
+			{
+				margin:auto;
+				padding:10px;
+				align : center;
+			}
+			
+			#orcInput
+			{
+				margin:auto;
+				width:80%
+			}
+			
+			#scoInput
+			{
+				margin:auto;
+				width:80%
+			}

@@ -67,9 +67,10 @@ var FStatement = Backbone.View.extend(
 	'render' : function()
 	{
 		var ret = this.model.toJSON();
-		ret.number = this.options.index;
+		ret.number = this.options.index + 1;
 		
 		this.$el.append(this.options.template(ret));
+		
 	},
 	
 	'changeSize' : function(ev)
@@ -79,6 +80,7 @@ var FStatement = Backbone.View.extend(
 	
 	'changeGen' : function(ev)
 	{
+		ev.preventDefault();
 		this.model.set('gen',ev.currentTarget.value);
 	},
 	
