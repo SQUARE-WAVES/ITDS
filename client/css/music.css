@@ -17,6 +17,12 @@
 				padding:10px
 			}
 			
+			.multicnv:focus
+			{
+				outline: none;
+			}
+			
+			
 			.small-form
 			{
 				width:80px;

@@ -112,6 +112,15 @@ var Window = Backbone.Model.extend(
 		
 		return notes;
 	},
+	
+	'get_selected':function()
+	{
+		var seq = this.attributes.seq;
+		return seq.filter(function(note)
+		{
+			return note.get('selected');
+		});
+	}
 });
 
 //right now it just holds a list of parameters and also the code

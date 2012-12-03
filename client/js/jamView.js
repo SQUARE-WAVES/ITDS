@@ -1,5 +1,3 @@
-
-
 var JamView =  Backbone.View.extend(
 {
 	'render':function()

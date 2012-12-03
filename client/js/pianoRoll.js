@@ -330,6 +330,13 @@ var PianoRoll = Backbone.View.extend({
 	'pianoRollKey' : function(ev)
 	{
 		ev.preventDefault();
+		var seq = this.model.get('seq');
+		
+		
+		if(ev.keyCode == 46) //46 is the delete key
+		{
+			seq.remove(this.model.get_selected());
+		}
 	},
 	
 	'events':
@@ -376,6 +383,8 @@ var PianoRoll = Backbone.View.extend({
 		this.options.bar_ctx = this.options.canvas1[0].getContext('2d');
 		this.options.note_ctx = this.options.canvas2[0].getContext('2d');
 		this.render_all();
+		
+		this.$el.find('.multicnv').keydown(this.pianoRollKey);
 		
 	}
 	
