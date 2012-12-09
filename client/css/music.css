@@ -56,6 +56,11 @@
 				align : center;
 			}
 			
+			.paramControl
+			{
+				width:50%;
+			}
+			
 			#orcInput
 			{
 				margin:auto;

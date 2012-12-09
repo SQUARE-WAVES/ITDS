@@ -13,9 +13,9 @@ var trackJson = function (track,jam)
 		istat.inum = inum+1;
 		istat.start = note.get('start');
 		istat.end = note.get('end');
-		istat.parameters = instr.get('parameters').map(function(param)
+		istat.parameters = _(instr.get('parameters')).map(function(val,key)
 		{
-			return note.get('parameters')[param];
+			return note.get('parameters').get(key);
 		});
 		
 		istat.nn = note.get('nn');

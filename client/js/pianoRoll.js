@@ -35,6 +35,7 @@ var PianoRoll = Backbone.View.extend({
 		var width = this.options.width;
 		var height = this.options.height;
 		var pallate = this.options.pallate;
+		var wnd = this.model.get('window');
 		
 		var clear = function()
 		{
@@ -95,8 +96,8 @@ var PianoRoll = Backbone.View.extend({
 		}
 		
 		clear();
-		draw_bars(this.model.get('bottom_nn'),this.model.get('top_nn'));
-		draw_grid(this.model.get('start'),this.model.get('end'),this.model.get('ticks_per_grid'));
+		draw_bars(wnd.get('bottom_nn'),wnd.get('top_nn'));
+		draw_grid(wnd.get('start'),wnd.get('end'),wnd.get('ticks_per_grid'));
 	},
 	
 	"render_notes":function()
@@ -105,7 +106,7 @@ var PianoRoll = Backbone.View.extend({
 		var width = this.options.width;
 		var height = this.options.height;
 		var pallate = this.options.pallate;
-		var seq_window = this.model;
+		var seq_window = this.model.get('window');
 		
 		var notes = seq_window.get_notes();
 		
@@ -198,21 +199,21 @@ var PianoRoll = Backbone.View.extend({
 	'detect_hit':function(ev)
 	{
 		var seq = this.model.get('seq');
-		var window = this.model;
+		var wnd = this.model.get('window');
 	
 		var x = ev.offsetX;
 		var y = ev.offsetY;
 	
 		var width = this.options.width;
 		var height = this.options.height;
-		var ticks = this.model.get('end') - this.model.get('start');
-		var ticks_per_grid = this.model.get('ticks_per_grid');
-		var ticks_per_note = this.model.get('ticks_per_note');
-		var end_note = this.model.get('top_nn');
-		var start_note = this.model.get('bottom_nn');
+		var ticks = wnd.get('end') - wnd.get('start');
+		var ticks_per_grid = wnd.get('ticks_per_grid');
+		var ticks_per_note = wnd.get('ticks_per_note');
+		var end_note = wnd.get('top_nn');
+		var start_note = wnd.get('bottom_nn');
 		
 		var tick_width = width/ticks;
-		var tick = Math.floor(x/tick_width) + this.model.get('start');
+		var tick = Math.floor(x/tick_width) + wnd.get('start');
 		
 		var grid_width = tick_width * ticks_per_grid;
 		
@@ -223,11 +224,11 @@ var PianoRoll = Backbone.View.extend({
 		
 		var grid_y = num_notes - Math.ceil(y/bar_height);
 		
-		var start = grid_x * ticks_per_grid + window.get('start');
+		var start = grid_x * ticks_per_grid + wnd.get('start');
 		var end = start + ticks_per_note;
 		var nn = grid_y+start_note;
 		
-		var note = window.has_note(tick,nn);
+		var note = wnd.has_note(tick,nn);
 		
 		var select_note = function(cid,include)
 		{
@@ -253,14 +254,18 @@ var PianoRoll = Backbone.View.extend({
 
 		if(!note)
 		{
-			var new_note = new Note(
+			if(ev.ctrlKey)
 			{
-				'start':start,
-				'end':end,
-				'nn':nn,
-			});
-			
-			seq.add(new_note);
+				var new_note = this.model.makeNote(start,end,nn);
+				seq.add(new_note);
+			}
+			else
+			{
+				seq.map(function(note)
+				{
+					note.set('selected',false);
+				});
+			}
 		}
 		else
 		{
@@ -272,7 +277,7 @@ var PianoRoll = Backbone.View.extend({
 	{
 		ev.preventDefault();
 		var val = parseInt(ev.currentTarget.value);
-		var seq_window = this.model;
+		var seq_window = this.model.get('window');
 		seq_window.set('ticks_per_note',val);
 	},
 	
@@ -280,7 +285,7 @@ var PianoRoll = Backbone.View.extend({
 	{
 		ev.preventDefault();
 		var val = parseInt(ev.currentTarget.value);
-		var seq_window = this.model;
+		var seq_window = this.model.get('window');
 		seq_window.set('ticks_per_grid',val);
 	},
 	
@@ -288,7 +293,7 @@ var PianoRoll = Backbone.View.extend({
 	{
 		ev.preventDefault();
 		var val = ev.currentTarget.value;
-		var seqWindow = this.model;
+		var seqWindow = this.model.get('window');
 		var ticksPer = seqWindow.get('ticks_per_beat')*seqWindow.get('beats_per_measure');
 		var distance = seqWindow.get('end') - seqWindow.get('start');
 		seqWindow.set('start',ticksPer * val,{silent:true});
@@ -299,7 +304,7 @@ var PianoRoll = Backbone.View.extend({
 	{
 		ev.preventDefault();
 		var val = ev.currentTarget.value;
-		var seqWindow = this.model;
+		var seqWindow = this.model.get('window');
 		
 		var ticksPer = seqWindow.get('ticks_per_beat')*seqWindow.get('beats_per_measure');
 		var start = seqWindow.get('start');
@@ -311,7 +316,7 @@ var PianoRoll = Backbone.View.extend({
 	{
 		ev.preventDefault();
 		var val = parseInt(ev.currentTarget.value);
-		var seqWindow = this.model;
+		var seqWindow = this.model.get('window');
 		
 		var note_range = seqWindow.get('top_nn') - seqWindow.get('bottom_nn');
 		
@@ -323,19 +328,20 @@ var PianoRoll = Backbone.View.extend({
 	{
 		ev.preventDefault();
 		var val = parseInt(ev.currentTarget.value);
-		var seqWindow = this.model;
+		var seqWindow = this.model.get('window');
 		seqWindow.set('top_nn', seqWindow.get('bottom_nn') + (12*val));
 	},
 	
 	'pianoRollKey' : function(ev)
 	{
 		ev.preventDefault();
+		var wnd = this.model.get('window');
 		var seq = this.model.get('seq');
 		
 		
 		if(ev.keyCode == 46) //46 is the delete key
 		{
-			seq.remove(this.model.get_selected());
+			seq.remove(wnd.getSelected());
 		}
 	},
 	
@@ -354,7 +360,7 @@ var PianoRoll = Backbone.View.extend({
 	{
 		_.bindAll(this, 'render_bars','render_notes','render_all','detect_hit','prep','set_note','pianoRollKey');
 		
-		this.model.bind('change',this.render_all);
+		this.model.get('window').bind('change',this.render_all);
 		
 		this.model.get('seq').bind('change',this.render_notes);
 		this.model.get('seq').bind('add',this.render_notes);

@@ -55,10 +55,8 @@ var NoteTable = Backbone.View.extend({
 		var ticks = this.model.get('window').get('ticks_per_beat')
 		
 		var selected = seq.filter(function(note){return note.get('selected')});
-		var unselected = seq.filter(function(note){return !note.get('selected')});
-		var notes = selected.concat(unselected);
 
-		_(notes).each(function(note)
+		_(selected).each(function(note)
 		{
 			var noteRow = $('<tr></tr>');
 			noteRow.attr('data-cid',note.cid);
@@ -99,15 +97,14 @@ var Istatement = Backbone.View.extend(
 			var ret={};
 			ret.nn = note.get('nn');
 			
-			
-			ret.parameters = params_list.map(function(item)
+			ret.parameters = _(params_list).map(function(item,key)
 			{
-				if(!note.get_param(item))
+				if(!note.get_param(key))
 				{
-					note.set_param(item,0,true);
+					note.set_param(key,item,true);
 				}	
 					
-				return {'name':item,'val':note.get_param(item)}
+				return {'name':key,'val':note.get_param(key)}
 				
 			});
 			
@@ -115,7 +112,7 @@ var Istatement = Backbone.View.extend(
 			
 			return ret;
 		}
-		
+		this.$el.empty();
 		this.$el.append(template(renderable(this.model)));
 	},
 	
@@ -142,6 +139,7 @@ var Istatement = Backbone.View.extend(
 	'initialize':function()
 	{
 		_.bindAll(this, 'render','change_pval','delete','render');
+		this.model.get('parameters').bind('change',this.render);
 		this.render();
 	}
 	

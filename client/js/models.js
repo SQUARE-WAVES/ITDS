@@ -10,17 +10,12 @@ var Note = Backbone.Model.extend(
 	
 	'set_param' : function(name,val,silent)
 	{
-		this.get('parameters')[name] = val;
-		
-		if(!silent)
-		{
-			this.change();
-		}
+		this.get('parameters').set(name,val,{'silent':silent});
 	},
 	
 	'get_param' : function(name)
 	{
-		return this.get('parameters')[name];
+		return this.attributes.parameters.get(name);
 	},
 	
 	'initialize':function()
@@ -29,8 +24,9 @@ var Note = Backbone.Model.extend(
 		
 		if(!this.attributes.parameters)
 		{
-			this.attributes.parameters = {};
+			this.attributes.parameters = new Backbone.Model({});
 		}
+		
 	}
 });
 
@@ -113,7 +109,7 @@ var Window = Backbone.Model.extend(
 		return notes;
 	},
 	
-	'get_selected':function()
+	'getSelected':function()
 	{
 		var seq = this.attributes.seq;
 		return seq.filter(function(note)
@@ -129,13 +125,42 @@ var Instrument = Backbone.Model.extend(
 	'defaults':
 	{
 		'name':'new instrument'
-	}
+	},
+	
 });
 
 var Track = Backbone.Model.extend(
 {
 	'defaults':
 	{
+	},
+	
+	'makeNote':function(start,end,nn)
+	{
+		var new_note = new Note(
+		{
+			'start':start,
+			'end':end,
+			'nn':nn,
+		});
+		
+		_(this.attributes.params.toJSON()).map(function(val,key)
+		{
+			new_note.set_param(key,val,true);
+		});
+
+		return new_note;
+	},
+	
+	'setDefault':function(param,val,silent)
+	{
+		this.attributes.params.set(param,val,{'silent':true});
+		
+		if(!silent)
+		{
+			this.change();
+		}
+		
 	},
 	
 	'initialize':function()
@@ -149,6 +174,9 @@ var Track = Backbone.Model.extend(
 		{
 			'seq':this.attributes.seq
 		});
+		
+		this.attributes.params = new Backbone.Model(this.attributes.instr.get('parameters'));
+		
 	}
 });
 

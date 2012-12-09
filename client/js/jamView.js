@@ -40,7 +40,7 @@ var JamView =  Backbone.View.extend(
 		var tabTemplate = this.options.tabTemplate;
 		var notePartial = this.options.notePartial;
 		var prollTemplate = this.options.prollTemplate;
-		
+		var controllerTemplate = this.options.synthControllerTemplate;
 		var navbar = $el.find("#tabber");
 		var tabContent = $el.find("#tabCont");
 		var li = '<li></li>';
@@ -63,7 +63,8 @@ var JamView =  Backbone.View.extend(
 				'prollTemplate' : prollTemplate,
 				'notePartial' : notePartial,
 				'tabTemplate' : tabTemplate,
-				'template' : trackTemplate
+				'template' : trackTemplate,
+				'controllerTemplate' : controllerTemplate
 			});
 			
 			return tview;
@@ -143,16 +144,24 @@ var TrackTab = Backbone.View.extend({
 		var $el = $el.append(domAddition)
 		var prollDiv = $el.find('#'+name+' div.proller');
 		var tabDiv = $el.find('#'+name+' div.tablespot');
+		var controlDiv = $el.find('#'+name+' div.controlZone');
 
 		this.proll = new PianoRoll(
 		{
 			'el' : prollDiv,
-			'model' : wnd,
-			'width' : 1000,
-			'height' : 500,
+			'model' : this.model,
+			'width' : 800,
+			'height' : 400,
 			'pallate' : defaultPallate,
 			'template' : prollTemplate,
 			'name' : name+'-proll'
+		});
+		
+		this.cont = new SynthController(
+		{
+			'el':controlDiv,
+			'model':this.model,
+			'template':this.options.controllerTemplate
 		});
 		
 		this.noteTab = new NoteTable(

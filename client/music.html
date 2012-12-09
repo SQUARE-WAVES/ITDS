@@ -84,9 +84,9 @@
 			<table class="table">
 				<thead>
 				<th>note</th>
-				{{#each parameters}}
-				<th>{{this}}</th>
-				{{/each}}
+				{{#keys parameters}}
+				<th>{{key}}</th>
+				{{/keys}}
 				</thead>
 				<tbody id="theTable">
 				</tbody>
@@ -164,9 +164,28 @@
 			<td><i class="icon-remove delete_button"></i></td>
 		</script>
 		
+		<script type="text/template" id="controllerTemplate">
+			<div class="well container-fluid">
+				{{#each lines}}
+				<div class="row-fluid">
+					{{#each this.params}}
+					<div class="span2">
+						<span class="input-prepend">
+							<span class="add-on">{{this.name}}</span>
+							<input class="paramControl" data-param="{{this.name}}" type="text" value="{{this.val}}" id="p-{{this.name}}"></input>
+						</span>
+					</div>
+					{{/each}}
+				</div>
+				{{/each}}			
+			</div>
+		</script>
+		
 		<script type="text/template" id="track-tab">
 			<div class="tab-pane tracktab" id="{{name}}">
 				<div class="proller span10" class="row">
+				</div>
+				<div class="controlZone span10 row">
 				</div>
 				<div class="tablespot span10">
 				</div>
@@ -272,6 +291,7 @@
 	<script type="text/javascript" src="js/jamView.js"></script>
 	<script type="text/javascript" src="js/genTable.js"></script>
 	<script type="text/javascript" src="js/jsonView.js"></script>
+	<script type="text/javascript" src="js/synthController.js"></script>
 	<script type="text/javascript" src="js/jamToCsound.js"></script>
 	<script type="text/javascript">
 	
@@ -296,10 +316,17 @@
 			var controlsTemplate = Handlebars.compile($('script#controls').text());
 			var genTableTemplate = Handlebars.compile($('script#f-table').text());
 			var genRowTemplate = Handlebars.compile($('script#fstatement').text());
+			var controllerTemplate = Handlebars.compile($('script#controllerTemplate').text());
 			
 			var instr1 = new Instrument({
 				'name' : 'detune buzz',
-				'parameters' :['amp','harmonics','detune','wave'],
+				'parameters' :
+				{
+					'amp':'16000',
+					'harmonics':'1',
+					'detune':'0',
+					'wave':'1'
+				},
 				'id':'cattes',
 				'lines':
 				[
@@ -312,13 +339,18 @@
 			
 			var instr2 = new Instrument({
 			 'name' : 'detune osc',
-			 'parameters' :['amp','wave','detune'],
+			 'parameters' :
+			 {
+					'amp':'16000',
+					'detune':'0',
+					'wave':'1'
+				},
 			 'id':'doggz',
 			 'lines':
 			 [
 				'ipch = cpsmidinn(p4)',
-				'a1 oscili p5, ipch %2b p7, p6',
-				'a2 oscili p5, ipch - p7, p6',
+				'a1 oscili p5, ipch %2b p6, p7',
+				'a2 oscili p5, ipch - p6, p7',
 				'outs a1,a2',
 			 ]
 			});
@@ -340,7 +372,8 @@
 				'prollTemplate' : prollTemplate,
 				'controlsTemplate' : controlsTemplate,
 				'genTableTemplate' : genTableTemplate,
-				'genRowTemplate' : genRowTemplate
+				'genRowTemplate' : genRowTemplate,
+				'synthControllerTemplate' : controllerTemplate
 			});
 		}
 		

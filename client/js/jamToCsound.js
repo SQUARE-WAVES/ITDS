@@ -33,13 +33,11 @@ var jamToCsound = function(jsonrep,tempo)
 	
 	if(ftabs.length > 0)
 	{
-		console.log(ftabs);
 		sco = sco + ftabs.join('\n');
 	}
 	
 	if(tracks.length > 0)
 	{
-		console.log(tracks);
 		sco = sco + '\n\n' + tracks.join('\n')
 	}
 	
