@@ -332,7 +332,7 @@ var PianoRoll = Backbone.View.extend({
 		seqWindow.set('top_nn', seqWindow.get('bottom_nn') + (12*val));
 	},
 	
-	'pianoRollKey' : function(ev)
+	'pianoRollKeyDown' : function(ev)
 	{
 		ev.preventDefault();
 		var wnd = this.model.get('window');
@@ -358,7 +358,7 @@ var PianoRoll = Backbone.View.extend({
 	
 	'initialize':function()
 	{
-		_.bindAll(this, 'render_bars','render_notes','render_all','detect_hit','prep','set_note','pianoRollKey');
+		_.bindAll(this, 'render_bars','render_notes','render_all','detect_hit','prep','set_note','pianoRollKeyDown');
 		
 		this.model.get('window').bind('change',this.render_all);
 		
@@ -390,7 +390,8 @@ var PianoRoll = Backbone.View.extend({
 		this.options.note_ctx = this.options.canvas2[0].getContext('2d');
 		this.render_all();
 		
-		this.$el.find('.multicnv').keydown(this.pianoRollKey);
+		this.$el.find('.multicnv').keydown(this.pianoRollKeyDown);
+		this.$el.find('.multicnv').keydown(this.pianoRollKeyUp);
 		
 	}
 	

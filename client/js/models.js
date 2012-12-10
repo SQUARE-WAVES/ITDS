@@ -248,6 +248,17 @@ var Jam = Backbone.Model.extend(
 		{
 			this.attributes.waves = new WaveList();
 		}
+	},
+	
+	'hasTrack':function(name)
+	{
+		var tracks = this.get('tracks');
+		var tracksWithName = tracks.filter(function(track)
+		{
+			return track.get('name') == name;
+		});
+		
+		return tracksWithName.length != 0;
 	}
 	
 });

@@ -100,6 +100,12 @@ var JamView =  Backbone.View.extend(
 			return;
 		}
 		
+		if(this.model.hasTrack(name))
+		{
+			alert('you already have a track with this name');
+			return;
+		}
+		
 		var instr = this.model.get('instruments').getByCid(cid);
 		this.model.addTrack(name,instr);
 	},

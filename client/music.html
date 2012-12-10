@@ -183,9 +183,9 @@
 		
 		<script type="text/template" id="track-tab">
 			<div class="tab-pane tracktab" id="{{name}}">
-				<div class="proller span10" class="row">
+				<div class="proller span10">
 				</div>
-				<div class="controlZone span10 row">
+				<div class="controlZone span10">
 				</div>
 				<div class="tablespot span10">
 				</div>
@@ -214,6 +214,7 @@
 				<button id="add-track">add track</button>
 			</div>			
 		</script>
+		
 	</head>
 	
 	<body>
@@ -230,7 +231,7 @@
 		
 		<div class="tab-content" id="mainTabs">
 			
-			<div class="container-fluid tab-pane " ID="trackScreen">
+			<div class="container-fluid tab-pane " id="trackScreen">
 				<div class="row-fluid">
 					<div class="span2 sidebar">
 						<div id="controlBox" class="well">
@@ -295,6 +296,23 @@
 	<script type="text/javascript" src="js/jamToCsound.js"></script>
 	<script type="text/javascript">
 	
+		//global keyboard hook
+		$('body').keydown(function(ev)
+		{
+			if(ev.keyCode == 17)
+			{
+				$('.multicnv').addClass('pencil');
+			}
+		});
+		
+		$('body').keyup(function(ev)
+		{
+			if(ev.keyCode == 17)
+			{
+				$('.multicnv').removeClass('pencil');
+			}
+		});
+	
 		var jam;
 	
 		var setupGen = function()
@@ -343,14 +361,19 @@
 			 {
 					'amp':'16000',
 					'detune':'0',
-					'wave':'1'
+					'wave':'1',
+					'lfo-wave':'1',
+					'vibrato':'4',
+					'vib-speed':'20',
+					
 				},
 			 'id':'doggz',
 			 'lines':
 			 [
 				'ipch = cpsmidinn(p4)',
-				'a1 oscili p5, ipch %2b p6, p7',
-				'a2 oscili p5, ipch - p6, p7',
+				'kvib oscili p9, p10, p8',
+				'a1 oscili p5, (ipch + p6) + kvib, p7',
+				'a2 oscili p5, (ipch - p6) + kvib, p7',
 				'outs a1,a2',
 			 ]
 			});

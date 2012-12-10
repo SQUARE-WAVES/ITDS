@@ -62,6 +62,9 @@ var jamToCsound = function(jsonrep,tempo)
 		instrTxt += (instr.lines.join('\n'));
 		instrTxt += '\nendin\n';
 		
+		instrTxt = instrTxt.replace(/\+/g,'%2b');
+		console.log(instrTxt);
+		
 		return instrTxt;
 	});
 	

@@ -21,8 +21,7 @@
 			{
 				outline: none;
 			}
-			
-			
+
 			.small-form
 			{
 				width:80px;
@@ -47,6 +46,11 @@
 			div.canvas-holder
 			{
 				padding:10px;
+			}
+			
+			.pencil:hover
+			{
+				cursor:crosshair;
 			}
 			
 			.sidebar div
