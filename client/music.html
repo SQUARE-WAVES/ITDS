@@ -340,7 +340,7 @@
 				'name' : 'detune buzz',
 				'parameters' :
 				{
-					'amp':'16000',
+					'amp':'80',
 					'harmonics':'1',
 					'detune':'0',
 					'wave':'1'
@@ -349,8 +349,9 @@
 				'lines':
 				[
 				 'ipch = cpsmidinn(p4)',
-				 'a1 buzz p5, ipch %2b p7, p6, p8',
-				 'a2 buzz p5, ipch - p7, p6, p8',
+				 'aenv linen 1, 0.001, p3, 0.001',
+				 'a1 buzz ampdb(p5 * aenv) , ipch + p7, p6, p8',
+				 'a2 buzz ampdb(p5 * aenv) , ipch - p7, p6, p8',
 				 'outs a1,a2',
 				]
 			});
@@ -359,7 +360,7 @@
 			 'name' : 'detune osc',
 			 'parameters' :
 			 {
-					'amp':'16000',
+					'amp':'80',
 					'detune':'0',
 					'wave':'1',
 					'lfo-wave':'1',
@@ -372,8 +373,9 @@
 			 [
 				'ipch = cpsmidinn(p4)',
 				'kvib oscili p9, p10, p8',
-				'a1 oscili p5, (ipch + p6) + kvib, p7',
-				'a2 oscili p5, (ipch - p6) + kvib, p7',
+				'aenv linen 1, 0.001, p3, 0.001',
+				'a1 oscili ampdb(p5 * aenv) , (ipch + p6) + kvib, p7',
+				'a2 oscili ampdb(p5 * aenv) , (ipch - p6) + kvib, p7',
 				'outs a1,a2',
 			 ]
 			});
