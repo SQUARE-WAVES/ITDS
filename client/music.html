@@ -349,9 +349,9 @@
 				'lines':
 				[
 				 'ipch = cpsmidinn(p4)',
-				 'aenv linen 1, 0.001, p3, 0.001',
-				 'a1 buzz ampdb(p5 * aenv) , ipch + p7, p6, p8',
-				 'a2 buzz ampdb(p5 * aenv) , ipch - p7, p6, p8',
+				 'aenv linen p5/100, 0.001, p3, 0.001',
+				 'a1 buzz ampdb(90 * aenv) , ipch + p7, p6, p8',
+				 'a2 buzz ampdb(90 * aenv) , ipch - p7, p6, p8',
 				 'outs a1,a2',
 				]
 			});
@@ -373,9 +373,9 @@
 			 [
 				'ipch = cpsmidinn(p4)',
 				'kvib oscili p9, p10, p8',
-				'aenv linen 1, 0.001, p3, 0.001',
-				'a1 oscili ampdb(p5 * aenv) , (ipch + p6) + kvib, p7',
-				'a2 oscili ampdb(p5 * aenv) , (ipch - p6) + kvib, p7',
+				'aenv linen p5/100, 0.001, p3, 0.001',
+				'a1 oscili ampdb(90 * aenv) , (ipch + p6) + kvib, p7',
+				'a2 oscili ampdb(90 * aenv) , (ipch - p6) + kvib, p7',
 				'outs a1,a2',
 			 ]
 			});
