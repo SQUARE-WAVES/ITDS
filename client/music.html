@@ -340,7 +340,7 @@
 				'name' : 'detune buzz',
 				'parameters' :
 				{
-					'amp':'80',
+					'amp':'86',
 					'harmonics':'1',
 					'detune':'0',
 					'wave':'1'
@@ -348,36 +348,35 @@
 				'id':'cattes',
 				'lines':
 				[
-				 'ipch = cpsmidinn(p4)',
-				 'aenv linen p5/100, 0.001, p3, 0.001',
-				 'a1 buzz ampdb(90 * aenv) , ipch + p7, p6, p8',
-				 'a2 buzz ampdb(90 * aenv) , ipch - p7, p6, p8',
-				 'outs a1,a2',
+					'ipch = cpsmidinn(p4)',
+					'aenv linen 1, 0.005, p3, 0.005',
+					'a1 buzz ampdb(p5 * aenv) , ipch + p7, p6, p8',
+					'a2 buzz ampdb(p5 * aenv) , ipch - p7, p6, p8',
+					'outs a1,a2',
 				]
 			});
 			
 			var instr2 = new Instrument({
-			 'name' : 'detune osc',
-			 'parameters' :
-			 {
-					'amp':'80',
+				'name' : 'detune osc',
+				'parameters' :
+				{
+					'amp':'86',
 					'detune':'0',
 					'wave':'1',
 					'lfo-wave':'1',
 					'vibrato':'4',
 					'vib-speed':'20',
-					
 				},
-			 'id':'doggz',
-			 'lines':
-			 [
-				'ipch = cpsmidinn(p4)',
-				'kvib oscili p9, p10, p8',
-				'aenv linen p5/100, 0.001, p3, 0.001',
-				'a1 oscili ampdb(90 * aenv) , (ipch + p6) + kvib, p7',
-				'a2 oscili ampdb(90 * aenv) , (ipch - p6) + kvib, p7',
-				'outs a1,a2',
-			 ]
+				'id':'doggz',
+				'lines':
+				[
+					'ipch = cpsmidinn(p4)',
+					'kvib oscili p9, p10, p8',
+					'aenv linen 1, 0.005, p3, 0.005',
+					'a1 oscili ampdb(p5 * aenv) , (ipch + p6) + kvib, p7',
+					'a2 oscili ampdb(p5 * aenv) , (ipch - p6) + kvib, p7',
+					'outs a1,a2',
+				]
 			});
 			
 			jam = new Jam({
